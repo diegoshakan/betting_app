@@ -1,0 +1,23 @@
+<!-- app/views/bets/new.html.erb -->
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Apostar na Rodada <%= @round.number %></h1>
+  <%= form_with url: round_bets_path(@round), method: :post, local: true, class: "space-y-4" do |form| %>
+    <% @games.each_with_index do |game, index| %>
+      <div class="border p-4 rounded-md">
+        <h3 class="font-semibold"><%= game.home_team.name %> X <%= game.away_team.name %></h3>
+        <%= form.hidden_field "bets[#{index}][game_id]", value: game.id %>
+        <div class="mt-2">
+          <%= form.radio_button "bets[#{index}][prediction]", "home", class: "mr-1" %>
+          <%= form.label "bets_#{index}_prediction_home", "#{game.home_team.name} vence", class: "mr-4" %>
+          <%= form.radio_button "bets[#{index}][prediction]", "draw", class: "mr-1" %>
+          <%= form.label "bets_#{index}_prediction_draw", "Empate", class: "mr-4" %>
+          <%= form.radio_button "bets[#{index}][prediction]", "away", class: "mr-1" %>
+          <%= form.label "bets_#{index}_prediction_away", "#{game.away_team.name} vence" %>
+        </div>
+      </div>
+    <% end %>
+    <div>
+      <%= form.submit "Enviar Apostas", class: "bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700" %>
+    </div>
+  <% end %>
+</div>

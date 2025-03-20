@@ -1,0 +1,18 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-4" }) do |f| %>
+      <div>
+        <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mt-1 block w-full p-2 border rounded-md" %>
+      </div>
+      <div>
+        <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "mt-1 block w-full p-2 border rounded-md" %>
+      </div>
+      <div>
+        <%= f.submit "Entrar", class: "w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>

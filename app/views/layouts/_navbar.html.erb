@@ -1,0 +1,56 @@
+<nav class="bg-gray-800 text-white p-4">
+  <div class="container mx-auto flex items-center justify-between">
+    <!-- Logo ou Título -->
+    <%= link_to "Bolão", root_path, class: "text-xl font-bold" %>
+
+    <!-- Botão Hamburguer para Mobile -->
+    <button id="navbar-toggle" class="md:hidden focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+      </svg>
+    </button>
+
+    <!-- Links da Navbar -->
+    <div id="navbar-menu" class="hidden md:flex md:items-center md:space-x-6">
+      <%= link_to "Rodadas", rounds_path, class: "hover:text-gray-300" %>
+
+      <% if user_signed_in? %>
+        <% if current_user.admin? %>
+          <%= link_to "Todas as Apostas", all_bets_path, class: "hover:text-gray-300" %>
+          <%= link_to "Nova Rodada", new_round_path, class: "hover:text-gray-300" %>
+          <%= link_to "Times", teams_path, class: "hover:text-gray-300" %>
+          <%= link_to "Novo Time", new_team_path, class: "hover:text-gray-300" %>
+        <% end %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "hover:text-gray-300 bg-transparent border-0 p-0" %>
+      <% else %>
+        <%= link_to "Entrar", new_user_session_path, class: "hover:text-gray-300" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Menu Mobile -->
+  <div id="navbar-mobile" class="md:hidden hidden">
+    <div class="flex flex-col space-y-2 mt-2">
+      <%= link_to "Rodadas", rounds_path, class: "block py-2 hover:text-gray-300" %>
+
+      <% if user_signed_in? %>
+        <% if current_user.admin? %>
+          <%= link_to "Todas as Apostas", all_bets_path, class: "block py-2 hover:text-gray-300" %>
+          <%= link_to "Nova Rodada", new_round_path, class: "block py-2 hover:text-gray-300" %>
+          <%= link_to "Times", teams_path, class: "block py-2 hover:text-gray-300" %>
+          <%= link_to "Novo Time", new_team_path, class: "block py-2 hover:text-gray-300" %>
+        <% end %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "block py-2 hover:text-gray-300 bg-transparent border-0 text-left" %>
+      <% else %>
+        <%= link_to "Entrar", new_user_session_path, class: "block py-2 hover:text-gray-300" %>
+      <% end %>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.getElementById('navbar-toggle').addEventListener('click', function() {
+    const menu = document.getElementById('navbar-mobile');
+    menu.classList.toggle('hidden');
+  });
+</script>

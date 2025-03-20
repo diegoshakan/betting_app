@@ -1,0 +1,46 @@
+<!-- app/views/rounds/new.html.erb -->
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Nova Rodada</h1>
+  <%= form_with model: @round, class: "space-y-6" do |form| %>
+    <div>
+      <%= form.label :number, "Número da Rodada", class: "block text-sm font-medium" %>
+      <%= form.number_field :number, class: "mt-1 block w-full p-2 border rounded-md" %>
+    </div>
+
+    <h2 class="text-xl font-semibold mt-4">Jogos</h2>
+    <div id="games" class="space-y-4">
+      <%= form.fields_for :games do |game_form| %>
+        <div class="flex space-x-4 items-center game-row">
+          <%= game_form.select :home_team_id, options_from_collection_for_select(@teams, :id, :name), { prompt: "Time da Casa" }, { class: "p-2 border rounded-md home-team-select", onchange: "updateTeamOptions()" } %>
+          <span>X</span>
+          <%= game_form.select :away_team_id, options_from_collection_for_select(@teams, :id, :name), { prompt: "Time Visitante" }, { class: "p-2 border rounded-md away-team-select", onchange: "updateTeamOptions()" } %>
+        </div>
+      <% end %>
+    </div>
+
+    <div>
+      <%= form.submit "Criar Rodada", class: "bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700" %>
+      <%= link_to "Voltar", rounds_path, class: "bg-orange-600 text-white p-2 rounded-md hover:bg-orange-700"%>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  function updateTeamOptions() {
+    const allSelects = document.querySelectorAll('.home-team-select, .away-team-select');
+    const selectedValues = Array.from(allSelects)
+      .map(select => select.value)
+      .filter(value => value !== "");
+
+    allSelects.forEach(select => {
+      const currentValue = select.value;
+      select.querySelectorAll('option').forEach(option => {
+        if (option.value && selectedValues.includes(option.value) && option.value !== currentValue) {
+          option.disabled = true;
+        } else {
+          option.disabled = false;
+        }
+      });
+    });
+  }
+</script>
