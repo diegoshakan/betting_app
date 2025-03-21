@@ -6,15 +6,22 @@ class BetsController < ApplicationController
 
   def index
     @users = User.joins(bets: { game: :round })
-                 .where(rounds: { status: "in_progress" })
-                 .distinct # Remove duplicatas
-                 .map { |user| [user, user.bets.joins(game: :round).where(rounds: { status: "in_progress" }).sum(&:score)] }
-                 .sort_by { |_, score| -score } # Ordena por pontuação decrescente
+                 .where(rounds: { status: %w[open in_progress closed] })
+                 .distinct
+    @user_scores = @users.each_with_object({}) do |user, hash|
+      in_progress_score = user.bets.joins(game: :round)
+                              .where(rounds: { status: "in_progress" })
+                              .sum(&:score)
+      hash[user.id] = in_progress_score
+    end
+    @users = @users.sort_by { |user| -@user_scores[user.id] }
   end
 
   def show_user_bets
     @user = User.find(params[:user_id])
-    @bets = @user.bets.includes(:game) # Todas as apostas, sem filtro de status
+    @bets = @user.bets.joins(game: :round)
+                 .where(rounds: { status: %w[open closed in_progress] })
+                 .includes(:game)
   end
 
   def new

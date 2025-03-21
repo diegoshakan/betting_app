@@ -1,6 +1,8 @@
 class Round < ApplicationRecord
   has_many :games, dependent: :destroy
   has_many :bets, through: :games
+  has_many :round_winners
+  has_many :winners, through: :round_winners, source: :user
 
   accepts_nested_attributes_for :games, allow_destroy: true, reject_if: :all_blank
 

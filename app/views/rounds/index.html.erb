@@ -10,26 +10,44 @@
   <% if @rounds.empty? %>
     <p class="text-gray-600">Nenhuma rodada criada ainda.</p>
   <% else %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <% @rounds.each do |round| %>
-        <div class="border p-4 rounded-md shadow-sm">
-          <h2 class="text-lg font-semibold">Rodada <%= round.number %> (<%= round.status.capitalize %>)</h2>
-          <div class="mt-2 space-y-2">
-            <%= link_to "Ver Jogos", round_path(round), class: "block text-blue-600 hover:underline" %>
-            <% if round.open? %>
-              <%= link_to "Fazer Apostas", new_round_bet_path(round), class: "block text-blue-600 hover:underline" %>
-            <% end %>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border">
+        <thead>
+          <tr>
+            <th class="px-4 py-2 border">Rodada</th>
+            <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Vencedores</th>
             <% if current_user.admin? %>
-              <div class="mt-2">
-                <%= form_with url: update_status_round_path(round), method: :patch, local: true, class: "inline" do |form| %>
-                  <%= form.select :status, options_for_select([["Abrir", "open"], ["Fechar", "closed"], ["Finalizar", "finished"], ["Em Andamento", "in_progress"]], round.status), {}, class: "border-gray-300 rounded-md" %>
-                  <%= form.submit "Atualizar", class: "ml-2 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700" %>
-                <% end %>
-              </div>
+              <th class="px-4 py-2 border">Ações</th>
             <% end %>
-          </div>
-        </div>
-      <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @rounds.each do |round| %>
+            <tr>
+              <td class="px-4 py-2 border"><%= link_to "Rodada #{round.number}", round_path(round), class: "text-blue-600 hover:underline" %></td>
+              <td class="px-4 py-2 border"><%= round.status.capitalize %></td>
+              <td class="px-4 py-2 border">
+                <% if round.finished? && round.winners.any? %>
+                  <%= round.round_winners.map { |rw| "#{rw.user.name} (#{rw.score} pontos)" }.join(", ") %>
+                <% elsif round.finished? %>
+                  Nenhum vencedor
+                <% else %>
+                  Ainda não finalizada
+                <% end %>
+              </td>
+              <% if current_user.admin? %>
+                <td class="px-4 py-2 border">
+                  <%= form_with url: update_status_round_path(round), method: :patch, local: true, class: "inline" do |form| %>
+                    <%= form.select :status, options_for_select([["Abrir", "open"], ["Fechar", "closed"], ["Finalizar", "finished"], ["Em Andamento", "in_progress"]], round.status), {}, class: "border-gray-300 rounded-md" %>
+                    <%= form.submit "Atualizar", class: "ml-2 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700" %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   <% end %>
 </div>
