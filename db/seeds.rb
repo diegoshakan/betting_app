@@ -1,6 +1,6 @@
 # db/seeds.rb
-User.create!(email: "admin@example.com", password: "password", admin: true)
-User.create!(email: "user@example.com", password: "password", admin: false)
+User.create!(email: "admin@example.com", password: "password", name: "admin", admin: true)
+User.create!(email: "user@example.com", password: "password", name: "simple user", admin: false)
 
 teams = [
   { name: "Flamengo", division: "Série A" },

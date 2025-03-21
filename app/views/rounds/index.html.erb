@@ -22,7 +22,7 @@
             <% if current_user.admin? %>
               <div class="mt-2">
                 <%= form_with url: update_status_round_path(round), method: :patch, local: true, class: "inline" do |form| %>
-                  <%= form.select :status, options_for_select([["Abrir", "open"], ["Fechar", "closed"], ["Finalizar", "finished"]], round.status), {}, class: "border-gray-300 rounded-md" %>
+                  <%= form.select :status, options_for_select([["Abrir", "open"], ["Fechar", "closed"], ["Finalizar", "finished"], ["Em Andamento", "in_progress"]], round.status), {}, class: "border-gray-300 rounded-md" %>
                   <%= form.submit "Atualizar", class: "ml-2 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700" %>
                 <% end %>
               </div>

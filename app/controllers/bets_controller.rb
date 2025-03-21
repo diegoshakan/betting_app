@@ -1,11 +1,15 @@
 class BetsController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_round_status, only: [:new, :create]
-  before_action :set_bet, only: [:edit, :update]
-  before_action :authorize_edit, only: [:edit, :update]
+  before_action :check_round_status, only: [ :new, :create ]
+  before_action :set_bet, only: [ :edit, :update ]
+  before_action :authorize_edit, only: [ :edit, :update ]
 
   def index
-    @users = User.joins(:bets).distinct # Todos os usuários com apostas, qualquer status
+    @users = User.joins(bets: { game: :round })
+                 .where(rounds: { status: "in_progress" })
+                 .distinct # Remove duplicatas
+                 .map { |user| [user, user.bets.joins(game: :round).where(rounds: { status: "in_progress" }).sum(&:score)] }
+                 .sort_by { |_, score| -score } # Ordena por pontuação decrescente
   end
 
   def show_user_bets
