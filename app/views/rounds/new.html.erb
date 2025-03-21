@@ -1,46 +1,65 @@
-<!-- app/views/rounds/new.html.erb -->
 <div class="container mx-auto p-4">
-  <h1 class="text-2xl font-bold mb-4">Nova Rodada</h1>
-  <%= form_with model: @round, class: "space-y-6" do |form| %>
-    <div>
-      <%= form.label :number, "Número da Rodada", class: "block text-sm font-medium" %>
-      <%= form.number_field :number, class: "mt-1 block w-full p-2 border rounded-md" %>
-    </div>
+  <h1 class="text-2xl font-bold mb-6">Nova Rodada</h1>
 
-    <h2 class="text-xl font-semibold mt-4">Jogos</h2>
-    <div id="games" class="space-y-4">
-      <%= form.fields_for :games do |game_form| %>
-        <div class="flex space-x-4 items-center game-row">
-          <%= game_form.select :home_team_id, options_from_collection_for_select(@teams, :id, :name), { prompt: "Time da Casa" }, { class: "p-2 border rounded-md home-team-select", onchange: "updateTeamOptions()" } %>
-          <span>X</span>
-          <%= game_form.select :away_team_id, options_from_collection_for_select(@teams, :id, :name), { prompt: "Time Visitante" }, { class: "p-2 border rounded-md away-team-select", onchange: "updateTeamOptions()" } %>
-        </div>
+  <%= form_with model: @round, local: true, class: "space-y-6" do |form| %>
+    <div>
+      <%= form.label :number, "Número da Rodada", class: "block text-sm font-medium text-gray-700" %>
+      <%= form.number_field :number, min: 1, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm" %>
+      <% if @round.errors[:number].any? %>
+        <p class="text-red-500 text-sm"><%= @round.errors[:number].join(", ") %></p>
       <% end %>
     </div>
 
-    <div>
-      <%= form.submit "Criar Rodada", class: "bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700" %>
-      <%= link_to "Voltar", rounds_path, class: "bg-orange-600 text-white p-2 rounded-md hover:bg-orange-700"%>
+    <h2 class="text-xl font-semibold">Jogos</h2>
+    <%= form.fields_for :games do |game_form| %>
+      <div class="border p-4 rounded-md mb-4">
+        <div class="flex space-x-4">
+          <div class="w-1/2">
+            <%= game_form.label :home_team_id, "Time da Casa", class: "block text-sm font-medium text-gray-700" %>
+            <%= game_form.collection_select :home_team_id, @teams, :id, :name, { prompt: "Selecione um time" }, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm home-team-select" %>
+          </div>
+          <div class="w-1/2">
+            <%= game_form.label :away_team_id, "Time Visitante", class: "block text-sm font-medium text-gray-700" %>
+            <%= game_form.collection_select :away_team_id, @teams, :id, :name, { prompt: "Selecione um time" }, class: "mt-1 block w-full border-gray-300 rounded-md shadow-sm away-team-select" %>
+          </div>
+        </div>
+        <% if game_form.object.errors.any? %>
+          <p class="text-red-500 text-sm mt-2"><%= game_form.object.errors.full_messages.join(", ") %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="flex space-x-4">
+      <%= form.submit "Criar Rodada", class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
+      <%= link_to "Cancelar", rounds_path, class: "bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700" %>
     </div>
   <% end %>
-</div>
 
-<script>
-  function updateTeamOptions() {
-    const allSelects = document.querySelectorAll('.home-team-select, .away-team-select');
-    const selectedValues = Array.from(allSelects)
-      .map(select => select.value)
-      .filter(value => value !== "");
+  <script>
+    function updateTeamOptions() {
+      const allSelects = document.querySelectorAll('.home-team-select, .away-team-select');
+      const selectedValues = Array.from(allSelects)
+        .map(select => select.value)
+        .filter(value => value !== "");
 
-    allSelects.forEach(select => {
-      const currentValue = select.value;
-      select.querySelectorAll('option').forEach(option => {
-        if (option.value && selectedValues.includes(option.value) && option.value !== currentValue) {
-          option.disabled = true;
-        } else {
-          option.disabled = false;
-        }
+      allSelects.forEach(select => {
+        const currentValue = select.value;
+        select.querySelectorAll('option').forEach(option => {
+          if (option.value && selectedValues.includes(option.value) && option.value !== currentValue) {
+            option.disabled = true;
+          } else {
+            option.disabled = false;
+          }
+        });
       });
+    }
+
+    // Adiciona o evento de mudança a todos os selects
+    document.querySelectorAll('.home-team-select, .away-team-select').forEach(select => {
+      select.addEventListener('change', updateTeamOptions);
     });
-  }
-</script>
+
+    // Executa uma vez no carregamento para desabilitar opções já selecionadas (se houver)
+    updateTeamOptions();
+  </script>
+</div>

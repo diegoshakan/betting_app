@@ -13,6 +13,8 @@ class RoundsController < ApplicationController
 
   def new
     @round = Round.new
+    10.times { @round.games.build }
+    @teams = Team.all
   end
 
   def create
@@ -20,6 +22,7 @@ class RoundsController < ApplicationController
     if @round.save
       redirect_to rounds_path, notice: "Rodada criada com sucesso!"
     else
+      @teams = Team.all # Para recarregar os times em caso de erro
       render :new, status: :unprocessable_entity
     end
   end
@@ -36,7 +39,7 @@ class RoundsController < ApplicationController
   private
 
   def round_params
-    params.require(:round).permit(:number)
+    params.require(:round).permit(:number, games_attributes: [:id, :home_team_id, :away_team_id])
   end
 
   def set_round
