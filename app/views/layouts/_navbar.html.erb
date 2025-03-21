@@ -12,11 +12,12 @@
 
     <!-- Links da Navbar -->
     <div id="navbar-menu" class="hidden md:flex md:items-center md:space-x-6">
-      <%= link_to "Rodadas", rounds_path, class: "hover:text-gray-300" %>
 
       <% if user_signed_in? %>
+        <span> Olá <%= current_user.email %> </span>
+        <%= link_to "Rodadas", rounds_path, class: "block py-2 hover:text-gray-300" %>
+        <%= link_to "Todas as Apostas", all_bets_path, class: "block py-2 hover:text-gray-300" %>
         <% if current_user.admin? %>
-          <%= link_to "Todas as Apostas", all_bets_path, class: "hover:text-gray-300" %>
           <%= link_to "Nova Rodada", new_round_path, class: "hover:text-gray-300" %>
           <%= link_to "Times", teams_path, class: "hover:text-gray-300" %>
           <%= link_to "Novo Time", new_team_path, class: "hover:text-gray-300" %>
@@ -31,11 +32,11 @@
   <!-- Menu Mobile -->
   <div id="navbar-mobile" class="md:hidden hidden">
     <div class="flex flex-col space-y-2 mt-2">
-      <%= link_to "Rodadas", rounds_path, class: "block py-2 hover:text-gray-300" %>
-
       <% if user_signed_in? %>
+        <span> Olá <%= current_user.email %> </span>
+        <%= link_to "Rodadas", rounds_path, class: "block py-2 hover:text-gray-300" %>
+        <%= link_to "Todas as Apostas", all_bets_path, class: "block py-2 hover:text-gray-300" %>
         <% if current_user.admin? %>
-          <%= link_to "Todas as Apostas", all_bets_path, class: "block py-2 hover:text-gray-300" %>
           <%= link_to "Nova Rodada", new_round_path, class: "block py-2 hover:text-gray-300" %>
           <%= link_to "Times", teams_path, class: "block py-2 hover:text-gray-300" %>
           <%= link_to "Novo Time", new_team_path, class: "block py-2 hover:text-gray-300" %>

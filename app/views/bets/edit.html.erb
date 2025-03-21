@@ -1,0 +1,24 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Editar Aposta na Rodada <%= @round.number %></h1>
+
+  <div class="border p-4 rounded-md">
+    <h3 class="font-semibold"><%= @game.home_team.name %> X <%= @game.away_team.name %></h3>
+    <%= form_with model: @bet, url: round_bet_path(@round, @bet), method: :patch, local: true, class: "mt-2" do |form| %>
+      <div class="space-y-2">
+        <%= form.radio_button :prediction, "home", class: "mr-1" %>
+        <%= form.label :prediction_home, "#{@game.home_team.name} vence", class: "mr-4" %>
+        <%= form.radio_button :prediction, "draw", class: "mr-1" %>
+        <%= form.label :prediction_draw, "Empate", class: "mr-4" %>
+        <%= form.radio_button :prediction, "away", class: "mr-1" %>
+        <%= form.label :prediction_away, "#{@game.away_team.name} vence" %>
+      </div>
+      <% if @bet.errors[:prediction].any? %>
+        <p class="text-red-500 text-sm"><%= @bet.errors[:prediction].join(", ") %></p>
+      <% end %>
+      <div class="mt-4">
+        <%= form.submit "Salvar", class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
+        <%= link_to "Cancelar", rounds_path, class: "ml-4 text-blue-600 hover:underline" %>
+      </div>
+    <% end %>
+  </div>
+</div>

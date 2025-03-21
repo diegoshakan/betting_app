@@ -15,14 +15,20 @@
             <th class="px-4 py-2 border">Jogo</th>
             <th class="px-4 py-2 border">Rodada</th>
             <th class="px-4 py-2 border">Palpite</th>
+            <th class="px-4 py-2 border">Ações</th>
           </tr>
         </thead>
         <tbody>
           <% @bets.each do |bet| %>
             <tr>
               <td class="px-4 py-2 border"><%= "#{bet.game.home_team.name} X #{bet.game.away_team.name}" %></td>
-              <td class="px-4 py-2 border"><%= bet.game.round.number %></td>
+              <td class="px-4 py-2 border"><%= bet.game.round.number %> (<%= bet.game.round.status.capitalize %>)</td>
               <td class="px-4 py-2 border"><%= bet.prediction.capitalize %></td>
+              <td class="px-4 py-2 border">
+                <% if bet.game.round.open? && (bet.user == current_user || current_user.admin?) %>
+                  <%= link_to "Editar", edit_round_bet_path(bet.game.round, bet), class: "text-blue-600 hover:underline" %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

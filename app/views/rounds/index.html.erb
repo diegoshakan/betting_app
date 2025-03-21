@@ -2,9 +2,8 @@
   <h1 class="text-2xl font-bold mb-6">Rodadas</h1>
 
   <% if current_user.admin? %>
-    <div class="mb-4 space-x-4">
+    <div class="mb-4">
       <%= link_to "Nova Rodada", new_round_path, class: "bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700" %>
-      <%= link_to "Ver Todas as Apostas", all_bets_path, class: "bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700" %>
     </div>
   <% end %>
 
@@ -14,10 +13,20 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <% @rounds.each do |round| %>
         <div class="border p-4 rounded-md shadow-sm">
-          <h2 class="text-lg font-semibold">Rodada <%= round.number %></h2>
+          <h2 class="text-lg font-semibold">Rodada <%= round.number %> (<%= round.status.capitalize %>)</h2>
           <div class="mt-2 space-y-2">
             <%= link_to "Ver Jogos", round_path(round), class: "block text-blue-600 hover:underline" %>
-            <%= link_to "Fazer Apostas", new_round_bet_path(round), class: "block text-blue-600 hover:underline" %>
+            <% if round.open? %>
+              <%= link_to "Fazer Apostas", new_round_bet_path(round), class: "block text-blue-600 hover:underline" %>
+            <% end %>
+            <% if current_user.admin? %>
+              <div class="mt-2">
+                <%= form_with url: update_status_round_path(round), method: :patch, local: true, class: "inline" do |form| %>
+                  <%= form.select :status, options_for_select([["Abrir", "open"], ["Fechar", "closed"], ["Finalizar", "finished"]], round.status), {}, class: "border-gray-300 rounded-md" %>
+                  <%= form.submit "Atualizar", class: "ml-2 bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700" %>
+                <% end %>
+              </div>
+            <% end %>
           </div>
         </div>
       <% end %>
