@@ -90,4 +90,5 @@ Rails.application.configure do
   # Desativar Action Cable
   config.action_cable.mount_path = nil
   config.action_cable.url = nil
+  config.solid_cable = false
 end
